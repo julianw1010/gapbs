@@ -6,11 +6,12 @@
 
 #include <algorithm>
 #include <cinttypes>
-#include <fstream>
 #include <functional>
 #include <random>
 #include <utility>
 #include <vector>
+#include <fstream>  // Added for tmp file creation
+#include <cstdio>   // Added for std::remove
 
 #include "builder.h"
 #include "graph.h"
@@ -102,6 +103,10 @@ void BenchmarkKernel(const CLApp &cli, const GraphT_ &g,
                      GraphFunc kernel, AnalysisFunc stats,
                      VerifierFunc verify) {
   g.PrintStats();
+
+  // Remove any existing files from a previous run
+  std::remove("/tmp/alloctest-bench.ready");
+  std::remove("/tmp/alloctest-bench.done");
 
   // Create ready file for run_f9_one.sh script
   std::ofstream ready_file("/tmp/alloctest-bench.ready");

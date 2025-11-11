@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cinttypes>
+#include <fstream>
 #include <functional>
 #include <random>
 #include <utility>
@@ -101,6 +102,13 @@ void BenchmarkKernel(const CLApp &cli, const GraphT_ &g,
                      GraphFunc kernel, AnalysisFunc stats,
                      VerifierFunc verify) {
   g.PrintStats();
+
+  // Create ready file for run_f9_one.sh script
+  std::ofstream ready_file("/tmp/alloctest-bench.ready");
+  if (ready_file.is_open()) {
+    ready_file.close();
+  }
+
   double total_seconds = 0;
   Timer trial_timer;
   for (int iter=0; iter < cli.num_trials(); iter++) {
@@ -120,6 +128,12 @@ void BenchmarkKernel(const CLApp &cli, const GraphT_ &g,
     }
   }
   PrintTime("Average Time", total_seconds / cli.num_trials());
+
+  // Create done file for run_f9_one.sh script
+  std::ofstream done_file("/tmp/alloctest-bench.done");
+  if (done_file.is_open()) {
+    done_file.close();
+  }
 }
 
 #endif  // BENCHMARK_H_
